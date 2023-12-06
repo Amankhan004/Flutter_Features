@@ -1,8 +1,14 @@
+import 'package:fingerprint_authentication/app/app.locator.dart';
+import 'package:fingerprint_authentication/app/app.router.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class HomeViewModel extends BaseViewModel {
+
+  final navigationService=locator<NavigationService>();
+
   final LocalAuthentication auth = LocalAuthentication();
   _SupportState _supportState = _SupportState.unknown;
   bool? _canCheckBiometrics;
@@ -62,6 +68,9 @@ class HomeViewModel extends BaseViewModel {
         ),
       );
       setBusy(false); // ViewModel is no longer busy
+       if (authenticated) {
+      navigateToProfile();
+    }
     } on PlatformException catch (e) {
       print(e);
       setBusy(false); // Handle exceptions, ViewModel is no longer busy
@@ -74,6 +83,12 @@ class HomeViewModel extends BaseViewModel {
     _authorized = authenticated ? 'Authorized' : 'Not Authorized';
     notifyListeners(); // Notify UI of changes
   }
+
+
+
+navigateToProfile(){
+navigationService.navigateToProfileView();
+}
 }
 
 enum _SupportState {
@@ -81,3 +96,4 @@ enum _SupportState {
   supported,
   unsupported,
 }
+
